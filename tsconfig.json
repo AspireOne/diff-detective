@@ -2,7 +2,7 @@
   "compilerOptions": {
     // Enable latest features
     "lib": ["ESNext"],
-    "target": "ESNext",
+    "target": "bun",
     "module": "ESNext",
     "moduleDetection": "force",
     "jsx": "react-jsx",
