@@ -39,18 +39,24 @@
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.27.3",
+    "@types/marked-terminal": "^6.1.1",
     "axios": "^1.7.7",
     "boxen": "^8.0.1",
     "chalk": "^5.3.0",
+    "chalk-template": "^1.1.0",
     "cli-highlight": "^2.1.11",
     "commander": "^12.1.0",
     "conf": "^13.0.1",
     "configstore": "^7.0.0",
     "dotenv": "^16.4.5",
     "inquirer": "^11.1.0",
+    "marked": "^11.0.1",
+    "marked-terminal": "^7.1.0",
     "openai": "^4.67.1",
     "ora": "^8.1.0",
     "path": "^0.12.7",
-    "simple-git": "^3.27.0"
+    "simple-git": "^3.27.0",
+    "strip-ansi": "^7.1.0",
+    "wrap-ansi": "^9.0.0"
   }
 }
