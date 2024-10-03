@@ -36,16 +36,35 @@ Diff Detective integrates into your git workflow as follows:
 To use Diff Detective, simply run:
 
 ```bash
-diff-detective review
+detective review
+```
+
+This will analyze your currently staged changes and provide a detailed report.
+
+Example parameter usage:
+
+```bash
+detective review --model gpt-4o --prompt "./my-custom-review-prompt.txt"
+```
+
+Example of setting defaults:
+
+```bash
+detective set-provider anthropic
+detective set-model claude-3-5-sonnet-20240620
 ```
 
 To see all available options, run
 
 ```bash
-diff-detective review --help
+detective review --help
 ```
 
-This will analyze your currently staged changes and provide a detailed report.
+or
+
+```bash
+detective --help
+```
 
 ## UI/UX
 
