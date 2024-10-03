@@ -14,7 +14,7 @@
     "start": "npx tsx src/index.ts --",
     "build": "tsc",
     "prepublishOnly": "pnpm run build",
-    "publish": "np",
+    "publish": "npx np",
     "format": "prettier --write \"src/**/*.ts\"",
     "format-staged": "prettier $(git diff --cached --name-only --diff-filter=ACMR | sed 's| |\\\\ |g') --write --ignore-unknown",
     "lint": "eslint ",
@@ -22,7 +22,13 @@
     "test": "echo ok",
     "prepare": "husky"
   },
-  "keywords": ["commit", "review", "ai", "git", "cli"],
+  "keywords": [
+    "commit",
+    "review",
+    "ai",
+    "git",
+    "cli"
+  ],
   "author": "Matěj Pešl <matejpesl1@gmail.com>",
   "bugs": "https://github.com/AspireOne/diff-detective/issues",
   "repository": "https://github.com/AspireOne/diff-detective",
@@ -55,7 +61,6 @@
     "inquirer": "^11.1.0",
     "marked": "^11.0.1",
     "marked-terminal": "^7.1.0",
-    "np": "^10.0.7",
     "openai": "^4.67.1",
     "ora": "^8.1.0",
     "path": "^0.12.7",
