@@ -1,0 +1,2 @@
+bun format-staged
+git update-index --again

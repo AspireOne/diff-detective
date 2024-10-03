@@ -1,0 +1,55 @@
+{
+  "name": "diff-detective",
+  "version": "0.0.1",
+  "description": "AI-powered git commit review tool",
+  "main": "dist/index.ts",
+  "type": "module",
+  "files": [
+    "src"
+  ],
+  "scripts": {
+    "start": "bun run src/index.ts",
+    "build": "bun build src/index.ts --outdir dist",
+    "dev": "bun --watch run src/index.ts",
+    "prepublishOnly": "npm run build",
+    "review": "bun run src/index.ts review",
+    "clear-config": "bun run src/index.ts clear-config",
+    "format": "prettier --write \"src/**/*.ts\"",
+    "format-staged": "prettier $(git diff --cached --name-only --diff-filter=ACMR | sed 's| |\\\\ |g') --write --ignore-unknown",
+    "lint": "eslint ",
+    "lint:fix": "eslint --fix",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "prepare": "husky"
+  },
+  "keywords": [],
+  "author": "Matěj Pešl <matejpesl1@gmail.com>",
+  "license": "ISC",
+  "devDependencies": {
+    "@eslint/js": "^9.11.1",
+    "@types/bun": "^1.1.10",
+    "@types/configstore": "^6.0.2",
+    "@types/inquirer": "^9.0.7",
+    "@typescript-eslint/eslint-plugin": "^8.8.0",
+    "@typescript-eslint/parser": "^8.8.0",
+    "eslint": "^9.11.1",
+    "eslint-config-prettier": "^9.1.0",
+    "husky": "^9.1.6",
+    "prettier": "^3.3.3",
+    "typescript-eslint": "^8.8.0"
+  },
+  "dependencies": {
+    "axios": "^1.7.7",
+    "boxen": "^8.0.1",
+    "chalk": "^5.3.0",
+    "cli-highlight": "^2.1.11",
+    "commander": "^12.1.0",
+    "conf": "^13.0.1",
+    "configstore": "^7.0.0",
+    "dotenv": "^16.4.5",
+    "inquirer": "^11.1.0",
+    "openai": "^4.67.1",
+    "ora": "^8.1.0",
+    "path": "^0.12.7",
+    "simple-git": "^3.27.0"
+  }
+}
