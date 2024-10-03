@@ -5,7 +5,7 @@
   "main": "dist/index.js",
   "type": "module",
   "files": [
-    "src"
+    "dist"
   ],
   "bin": {
     "detective": "dist/index.js"
@@ -37,7 +37,6 @@
   "license": "ISC",
   "devDependencies": {
     "@eslint/js": "^9.11.1",
-    "@types/bun": "^1.1.10",
     "@types/configstore": "^6.0.2",
     "@types/inquirer": "^9.0.7",
     "@typescript-eslint/eslint-plugin": "^8.8.0",
