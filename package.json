@@ -1,6 +1,6 @@
 {
   "name": "diff-detective",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "description": "AI-powered git commit review tool",
   "main": "dist/index.js",
   "type": "module",
