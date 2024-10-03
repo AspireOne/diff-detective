@@ -10,6 +10,7 @@ import { marked } from "marked";
 import { markedTerminalInstance } from "./marked-terminal.ts";
 import chalk from "chalk";
 import { models } from "./models.ts";
+import * as fs from "node:fs";
 
 const baseSpinnerText = "Reviewing changes...\n";
 
@@ -29,41 +30,63 @@ function checkModelProviderMismatch(model: string, provider: Provider): Provider
 }
 
 export async function review(cliOptions: ReviewCliOptions) {
+  if (!git.isGitRepository()) {
+    return logger.error(" Not a git repository");
+  }
+
+  const status = await git.status();
+  if (status.staged.length === 0) {
+    return logger.error(" No staged changes");
+  }
+
   const model = cliOptions.model ?? config.getModel();
   let provider = cliOptions.provider ?? config.getActiveProvider();
   const maxTokens = cliOptions.maxTokens ?? config.getMaxTokens();
   const maxContextLength = cliOptions.maxContextLength ?? config.getMaxContextLength();
+  let customPrompt: string | null = null;
+
+  logger.info("cli options", JSON.stringify(cliOptions));
+
+  if (cliOptions.prompt) {
+    if (!fs.existsSync(cliOptions.prompt)) {
+      logger.error(`Custom prompt file ${cliOptions.prompt} does not exist.`);
+      return;
+    }
+
+    customPrompt = fs.readFileSync(cliOptions.prompt, "utf8");
+    customPrompt = customPrompt.trim().substring(0, 250_000);
+    if (!customPrompt || customPrompt.length === 0) {
+      logger.error(`Custom prompt file ${cliOptions.prompt} is empty.`);
+    }
+  }
 
   const correctProvider = checkModelProviderMismatch(model, provider);
   if (correctProvider) provider = correctProvider;
 
   const apiKey = cliOptions.apiKey ?? (await config.getApiKeyOrAsk(provider));
 
-  if (!git.isGitRepository()) {
-    logger.error(" Not a git repository");
-    return;
-  }
-
-  const status = await git.status();
-  if (status.staged.length === 0) {
-    logger.error(" No staged changes");
-    return;
-  }
-
   logger.info(`• Using provider: ${provider}`);
   logger.info(`• Using model: ${model}`);
   logger.info(`• API Key: ${apiKey.substring(0, 10)}...`);
   logger.info(`• Max tokens: ${maxTokens}`);
   logger.info(`• Max context length: ${maxContextLength}`);
+  if (customPrompt)
+    logger.info(`• Using a custom prompt: ${customPrompt.substring(0, 30)}...`);
 
   const spinner = ora({
     text: baseSpinnerText,
   }).start();
-  spinner.render();
 
   try {
     const client = new AiClient(provider, apiKey);
-    await execute({ client, model, spinner, maxTokens, maxContextLength });
+    await execute({
+      client,
+      model,
+      spinner,
+      maxTokens,
+      maxContextLength,
+      customPrompt,
+    });
   } catch (error) {
     spinner.fail(" Review failed: " + error);
     logger.error("Error:", error);
@@ -76,9 +99,15 @@ async function execute(props: {
   spinner: Ora;
   maxTokens: number;
   maxContextLength: number;
+  customPrompt?: string | null;
 }) {
   let content = await git.getStagedChangesWithFullContent();
   content = content.trim().substring(0, props.maxContextLength);
+
+  const prompt = props.customPrompt
+    ? props.customPrompt.replace("{{CONTEXT}}", content)
+    : reviewUserPrompt(content);
+
   const lineCount = content.split("\n").length;
   const stagedFiles = await git.getStagedFiles();
 
@@ -91,7 +120,7 @@ async function execute(props: {
     temperature: 0.7,
     messages: [
       { role: "system", content: reviewSystemPrompt },
-      { role: "user", content: reviewUserPrompt(content) },
+      { role: "user", content: prompt },
     ],
   });
 

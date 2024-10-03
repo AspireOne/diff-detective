@@ -6,15 +6,26 @@ import { packageJson } from "./package-json";
 import { logger } from "./logger";
 import { ProvidersEnum } from "./config.ts";
 
-export type ReviewCliOptions = {
-  model?: string;
-  provider?: Provider;
-  maxTokens?: number;
-  maxContextLength?: number;
-  apiKey?: string;
+// Define it like this so that we can check it during runtime.
+const reviewCliOptions = {
+  model: "",
+  provider: "" as Provider,
+  maxTokens: 1 as number,
+  maxContextLength: 1 as number,
+  apiKey: "",
+  prompt: "",
 };
 
-const reviewKey = (key: keyof ReviewCliOptions) => key;
+export type ReviewCliOptions = Partial<typeof reviewCliOptions>;
+
+function ensureReviewParamsValidity(options: any) {
+  // If options contains any key that is not in ReviewCliOptions, throw an error
+  for (const key in options) {
+    if (!(key in reviewCliOptions)) {
+      throw new Error(`Option name mismatch: ${key}`);
+    }
+  }
+}
 
 export function cli() {
   const program = new Command();
@@ -28,28 +39,35 @@ export function cli() {
     .command("review")
     .description("Review staged changes")
     .option(
-      `-m, --model <${reviewKey("model")}>`,
+      `-m, --model <model>`,
       `Specify the model to use for this review (the active provider must support it) (gpt-4o, claude-3-5-sonnet-20240620, anthropic/claude-3.5-sonnet:beta, etc. ...) (using: ${config.getModel()})`,
     )
     .addOption(
       new Option(
-        `-p, --provider <${reviewKey("provider")}>`,
+        `-p, --provider <provider>`,
         `Specify the provider to use for this review (using: ${config.getActiveProvider()})`,
       ).choices(Object.values(ProvidersEnum)),
     )
     .option(
-      `-mt, --max-tokens <${reviewKey("maxTokens")}>`,
+      `-mt, --max-tokens <maxTokens>`,
       `Specify the max tokens to use for this review (using: ${String(config.getMaxTokens())})`,
     )
     .option(
-      `-a, --api-key <${reviewKey("apiKey")}>`,
+      `-a, --api-key <apiKey>`,
       `Specify the API key to use for this review (using: ${config.getApiKey(config.getActiveProvider())?.substring(0, 10) ?? "none"})`,
     )
     .option(
-      `-mcl, --max-context-length <${reviewKey("maxContextLength")}>`,
+      `-pt, --prompt <customPromptPath>`,
+      `Specify your prompt in a file and put {{CONTEXT}} where you want the context to be inserted. Then pass the path to the file`,
+    )
+    .option(
+      `-mcl, --max-context-length <maxContextLength>`,
       `Specify the max context length to use for this review (using: ${String(config.getMaxContextLength())})`,
     )
-    .action((options) => review(options as Partial<ReviewCliOptions>));
+    .action(async (options) => {
+      ensureReviewParamsValidity(options);
+      await review(options as ReviewCliOptions);
+    });
 
   program
     .command("set-api-key <provider> <key>")
