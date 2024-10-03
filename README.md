@@ -17,10 +17,9 @@ By leveraging AI, it aims to:
 
 - AI-powered analysis of staged git changes
 - Identification of bugs, potential issues, and code smells
-- Suggestions for code improvements and best practices
 - Easy-to-use command-line interface
-- Secure storage of API keys
 - Configurable options for review depth and focus
+- Configurable prompt, model, provider, max tokens, api key...
 
 ## How It Works
 
@@ -40,6 +39,12 @@ To use Diff Detective, simply run:
 diff-detective review
 ```
 
+To see all available options, run
+
+```bash
+diff-detective review --help
+```
+
 This will analyze your currently staged changes and provide a detailed report.
 
 ## UI/UX
@@ -53,4 +58,6 @@ Diff Detective is designed with a clean, intuitive command-line interface:
 
 ## Installation
 
+```bash
 pnpm install -g diff-detective
+```
