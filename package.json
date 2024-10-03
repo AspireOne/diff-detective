@@ -1,6 +1,6 @@
 {
   "name": "diff-detective",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "AI-powered git commit review tool",
   "main": "dist/index.js",
   "type": "module",
@@ -22,8 +22,12 @@
     "test": "echo ok",
     "prepare": "husky"
   },
-  "keywords": [],
+  "keywords": ["commit", "review", "ai", "git", "cli"],
   "author": "Matěj Pešl <matejpesl1@gmail.com>",
+  "bugs": "https://github.com/AspireOne/diff-detective/issues",
+  "repository": "https://github.com/AspireOne/diff-detective",
+  "preferGlobal": true,
+  "packageManager": "pnpm@9.1.4",
   "license": "ISC",
   "devDependencies": {
     "@eslint/js": "^9.11.1",
