@@ -14,7 +14,7 @@
     "start": "npx tsx src/index.ts --",
     "build": "tsc",
     "prepublishOnly": "pnpm run build",
-    "publish": "npx np",
+    "release": "npx np",
     "format": "prettier --write \"src/**/*.ts\"",
     "format-staged": "prettier $(git diff --cached --name-only --diff-filter=ACMR | sed 's| |\\\\ |g') --write --ignore-unknown",
     "lint": "eslint ",
