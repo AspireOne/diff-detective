@@ -1,4 +1,4 @@
-import { Provider, ProvidersEnum } from "./config.ts";
+import { Provider } from "./config.js";
 
 const openai = [
   "gpt-4o",

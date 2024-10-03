@@ -11,9 +11,9 @@
     "detective": "dist/index.js"
   },
   "scripts": {
-    "start": "bun run src/index.ts --",
-    "build": "bun build src/index.ts --outdir dist --target node",
-    "prepublishOnly": "bun run build",
+    "start": "npx tsx src/index.ts --",
+    "build": "tsc",
+    "prepublishOnly": "pnpm run build",
     "publish": "np",
     "format": "prettier --write \"src/**/*.ts\"",
     "format-staged": "prettier $(git diff --cached --name-only --diff-filter=ACMR | sed 's| |\\\\ |g') --write --ignore-unknown",

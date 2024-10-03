@@ -1,15 +1,15 @@
-import { config, Provider } from "./config.ts";
+import { config, Provider } from "./config.js";
 import ora, { type Ora } from "ora";
-import { logger } from "./logger.ts";
-import { AiClient } from "./ai-client.ts";
-import { git } from "./git.ts";
-import { reviewUserPrompt } from "./prompts/review.user.ts";
-import { reviewSystemPrompt } from "./prompts/review.system.ts";
-import type { ReviewCliOptions } from "./cli.ts";
+import { logger } from "./logger.js";
+import { AiClient } from "./ai-client.js";
+import { git } from "./git.js";
+import { reviewUserPrompt } from "./prompts/review.user.js";
+import { reviewSystemPrompt } from "./prompts/review.system.js";
+import type { ReviewCliOptions } from "./cli.js";
 import { marked } from "marked";
-import { markedTerminalInstance } from "./marked-terminal.ts";
+import { markedTerminalInstance } from "./marked-terminal.js";
 import chalk from "chalk";
-import { models } from "./models.ts";
+import { models } from "./models.js";
 import * as fs from "node:fs";
 
 const baseSpinnerText = "Reviewing changes...\n";
@@ -45,8 +45,6 @@ export async function review(cliOptions: ReviewCliOptions) {
   const maxContextLength = cliOptions.maxContextLength ?? config.getMaxContextLength();
   let customPrompt: string | null = null;
 
-  logger.info("cli options", JSON.stringify(cliOptions));
-
   if (cliOptions.prompt) {
     if (!fs.existsSync(cliOptions.prompt)) {
       logger.error(`Custom prompt file ${cliOptions.prompt} does not exist.`);
@@ -67,7 +65,6 @@ export async function review(cliOptions: ReviewCliOptions) {
 
   logger.info(`• Using provider: ${provider}`);
   logger.info(`• Using model: ${model}`);
-  logger.info(`• API Key: ${apiKey.substring(0, 10)}...`);
   logger.info(`• Max tokens: ${maxTokens}`);
   logger.info(`• Max context length: ${maxContextLength}`);
   if (customPrompt)

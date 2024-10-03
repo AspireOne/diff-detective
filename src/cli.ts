@@ -1,10 +1,10 @@
 import { Command, Option } from "commander";
-import { review } from "./review";
-import { config } from "./config";
-import type { Provider } from "./config";
-import { packageJson } from "./package-json";
-import { logger } from "./logger";
-import { ProvidersEnum } from "./config.ts";
+import { review } from "./review.js";
+import { config } from "./config.js";
+import type { Provider } from "./config.js";
+import { packageJson } from "./package-json.js";
+import { logger } from "./logger.js";
+import { ProvidersEnum } from "./config.js";
 
 // Define it like this so that we can check it during runtime.
 const reviewCliOptions = {

@@ -9,9 +9,8 @@
     "allowJs": true,
     // Bundler mode
     "moduleResolution": "bundler",
-    "allowImportingTsExtensions": true,
+    "allowImportingTsExtensions": false,
     "verbatimModuleSyntax": false,
-    "noEmit": true,
     // Best practices
     "strict": true,
     "skipLibCheck": true,
@@ -19,6 +18,10 @@
     // Some stricter flags
     "noUnusedLocals": false,
     "noUnusedParameters": false,
-    "noPropertyAccessFromIndexSignature": true
-  }
+    "noPropertyAccessFromIndexSignature": true,
+    "outDir": "dist"
+  },
+  "exclude": ["node_modules"],
+  // include src
+  "include": ["./src/**/*.ts"]
 }

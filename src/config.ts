@@ -1,7 +1,7 @@
 import inquirer from "inquirer";
-import { TypedConfigStore } from "./config-store.ts";
-import { packageJson } from "./package-json.ts";
-import { logger } from "./logger.ts";
+import { TypedConfigStore } from "./config-store.js";
+import { packageJson } from "./package-json.js";
+import { logger } from "./logger.js";
 
 export type Config = {
   OPENAI_API_KEY?: string;

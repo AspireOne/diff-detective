@@ -1,7 +1,7 @@
 import OpenAI from "openai";
-import { configDefaults, type Provider } from "./config.ts";
+import { configDefaults, type Provider } from "./config.js";
 import Anthropic, { Anthropic as AnthropicClient } from "@anthropic-ai/sdk";
-import { logger } from "./logger.ts";
+import { logger } from "./logger.js";
 
 type OpenAiMessages = OpenAI.Chat.Completions.ChatCompletionMessageParam[];
 type AnthropicMessages = { role: "user" | "assistant"; content: string }[];

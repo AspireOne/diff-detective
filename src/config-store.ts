@@ -1,4 +1,4 @@
-import type { Config, Provider } from "./config.ts";
+import type { Config, Provider } from "./config.js";
 import Configstore from "configstore";
 
 export class TypedConfigStore extends Configstore {
