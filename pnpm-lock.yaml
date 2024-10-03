@@ -16,24 +16,15 @@ importers:
       axios:
         specifier: ^1.7.7
         version: 1.7.7
-      boxen:
-        specifier: ^8.0.1
-        version: 8.0.1
       chalk:
         specifier: ^5.3.0
         version: 5.3.0
       chalk-template:
         specifier: ^1.1.0
         version: 1.1.0
-      cli-highlight:
-        specifier: ^2.1.11
-        version: 2.1.11
       commander:
         specifier: ^12.1.0
         version: 12.1.0
-      conf:
-        specifier: ^13.0.1
-        version: 13.0.1
       configstore:
         specifier: ^7.0.0
         version: 7.0.0
@@ -64,12 +55,6 @@ importers:
       simple-git:
         specifier: ^3.27.0
         version: 3.27.0
-      strip-ansi:
-        specifier: ^7.1.0
-        version: 7.1.0
-      wrap-ansi:
-        specifier: ^9.0.0
-        version: 9.0.0
     devDependencies:
       "@eslint/js":
         specifier: ^9.11.1
@@ -603,27 +588,10 @@ packages:
       }
     engines: { node: ">=12" }
 
-  ajv-formats@3.0.1:
-    resolution:
-      {
-        integrity: sha512-8iUql50EUR+uUcdRQ3HDqa6EVyo3docL8g5WJ3FNcWmu62IbkGUue/pEyLBW8VGKKucTPgqeks4fIU1DA4yowQ==,
-      }
-    peerDependencies:
-      ajv: ^8.0.0
-    peerDependenciesMeta:
-      ajv:
-        optional: true
-
   ajv@6.12.6:
     resolution:
       {
         integrity: sha512-j3fVLgvTo527anyYyJOGTYJbG+vnnQYvE0m5mmkc1TK+nxAppkCLMIL0aZ4dblVCNoGShhm+kzE4ZUykBoMg4g==,
-      }
-
-  ajv@8.17.1:
-    resolution:
-      {
-        integrity: sha512-B/gBuNg5SiMTrPkC+A2+cW0RszwxYmn6VYxB/inlBStS5nx6xHIt/ehKRhIMhqusl7a8LjQoZnjCs5vhwxOQ1g==,
       }
 
   ansi-align@3.0.1:
@@ -1042,13 +1010,6 @@ packages:
         integrity: sha512-/Srv4dswyQNBfohGpz9o6Yb3Gz3SrUDqBH5rTuhGR7ahtlbYKnVxw2bCFMRljaA7EXHaXZ8wsHdodFvbkhKmqg==,
       }
 
-  conf@13.0.1:
-    resolution:
-      {
-        integrity: sha512-l9Uwc9eOnz39oADzGO2cSBDi7siv8lwO+31ocQ2nOJijnDiW3pxqm9VV10DPYUO28wW83DjABoUqY1nfHRR2hQ==,
-      }
-    engines: { node: ">=18" }
-
   config-chain@1.1.13:
     resolution:
       {
@@ -1086,13 +1047,6 @@ packages:
       {
         integrity: sha512-hBSVCvSmWC+QypYObzwGOd9wqdDpOt+0wl0KbU+R+uuZBS1jN8VsD1ss3irQDknRj5NvxiTF6oj/nDRnN/UQNw==,
       }
-
-  debounce-fn@6.0.0:
-    resolution:
-      {
-        integrity: sha512-rBMW+F2TXryBwB54Q0d8drNEI+TfoS9JpNTAoVpukbWEhjXQq4rySFYLaqXMFXwdv61Zb2OHtj5bviSoimqxRQ==,
-      }
-    engines: { node: ">=18" }
 
   debug@4.3.7:
     resolution:
@@ -1205,13 +1159,6 @@ packages:
       {
         integrity: sha512-5U0rVMU5Y2n2+ykNLQqMoqklN9ICBT/KsvC1Gz6vqHbz2AXXGkG+Pm5rMWk/8Vjrr/mY9985Hi8DYzn1F09Nyw==,
       }
-
-  env-paths@3.0.0:
-    resolution:
-      {
-        integrity: sha512-dtJUTepzMW3Lm/NPxRf3wP4642UWhjL2sQxc+ym2YMj1m/H2zDNQOlezafzkHwn6sMstjHTwG6iQQsctDW/b1A==,
-      }
-    engines: { node: ^12.20.0 || ^14.13.1 || >=16.0.0 }
 
   environment@1.1.0:
     resolution:
@@ -1390,12 +1337,6 @@ packages:
     resolution:
       {
         integrity: sha512-DCXu6Ifhqcks7TZKY3Hxp3y6qphY5SJZmrWMDrKcERSOXWQdMhU9Ig/PYrzyw/ul9jOIyh0N4M0tbC5hodg8dw==,
-      }
-
-  fast-uri@3.0.2:
-    resolution:
-      {
-        integrity: sha512-GR6f0hD7XXyNJa25Tb9BuIdN0tdr+0BMi6/CJPH3wJO1JjNG3n/VsSw38AwRdKZABm8lGbPfakLRkYzx2V9row==,
       }
 
   fastq@1.17.1:
@@ -2021,18 +1962,6 @@ packages:
     resolution:
       {
         integrity: sha512-xbbCH5dCYU5T8LcEhhuh7HJ88HXuW3qsI3Y0zOZFKfZEHcpWiHU/Jxzk629Brsab/mMiHQti9wMP+845RPe3Vg==,
-      }
-
-  json-schema-traverse@1.0.0:
-    resolution:
-      {
-        integrity: sha512-NM8/P9n3XjXhIZn1lLhkFaACTOURQXjWhV4BA/RnOv8xvgqtqpAX9IO4mRQxSx1Rlo4tqzeqb0sOlruaOy3dug==,
-      }
-
-  json-schema-typed@8.0.1:
-    resolution:
-      {
-        integrity: sha512-XQmWYj2Sm4kn4WeTYvmpKEbyPsL7nBsb647c7pMe6l02/yx2+Jfc4dT6UZkEXnIUb5LhD55r2HPsJ1milQ4rDg==,
       }
 
   json-stable-stringify-without-jsonify@1.0.1:
@@ -2777,13 +2706,6 @@ packages:
       }
     engines: { node: ">=0.10.0" }
 
-  require-from-string@2.0.2:
-    resolution:
-      {
-        integrity: sha512-Xf0nWe6RseziFMu+Ap9biiUbmplq6S9/p+7w7YXP/JBHhrUDDUhwa+vANyubuqfZWTveU//DYVGsDG7RKL/vEw==,
-      }
-    engines: { node: ">=0.10.0" }
-
   resolve-cwd@3.0.0:
     resolution:
       {
@@ -3272,13 +3194,6 @@ packages:
       }
     engines: { node: ">=14.17" }
     hasBin: true
-
-  uint8array-extras@1.4.0:
-    resolution:
-      {
-        integrity: sha512-ZPtzy0hu4cZjv3z5NW9gfKnNLjoz4y6uv4HlelAjDK7sY/xOkKZv9xK/WQpcsBB3jEybChz9DPC2U/+cusjJVQ==,
-      }
-    engines: { node: ">=18" }
 
   undici-types@5.26.5:
     resolution:
@@ -3841,23 +3756,12 @@ snapshots:
       clean-stack: 4.2.0
       indent-string: 5.0.0
 
-  ajv-formats@3.0.1(ajv@8.17.1):
-    optionalDependencies:
-      ajv: 8.17.1
-
   ajv@6.12.6:
     dependencies:
       fast-deep-equal: 3.1.3
       fast-json-stable-stringify: 2.1.0
       json-schema-traverse: 0.4.1
       uri-js: 4.4.1
-
-  ajv@8.17.1:
-    dependencies:
-      fast-deep-equal: 3.1.3
-      fast-uri: 3.0.2
-      json-schema-traverse: 1.0.0
-      require-from-string: 2.0.2
 
   ansi-align@3.0.1:
     dependencies:
@@ -4079,18 +3983,6 @@ snapshots:
 
   concat-map@0.0.1: {}
 
-  conf@13.0.1:
-    dependencies:
-      ajv: 8.17.1
-      ajv-formats: 3.0.1(ajv@8.17.1)
-      atomically: 2.0.3
-      debounce-fn: 6.0.0
-      dot-prop: 9.0.0
-      env-paths: 3.0.0
-      json-schema-typed: 8.0.1
-      semver: 7.6.3
-      uint8array-extras: 1.4.0
-
   config-chain@1.1.13:
     dependencies:
       ini: 1.3.8
@@ -4119,10 +4011,6 @@ snapshots:
       which: 2.0.2
 
   date-fns@1.30.1: {}
-
-  debounce-fn@6.0.0:
-    dependencies:
-      mimic-function: 5.0.1
 
   debug@4.3.7:
     dependencies:
@@ -4175,8 +4063,6 @@ snapshots:
   emoji-regex@8.0.0: {}
 
   emojilib@2.4.0: {}
-
-  env-paths@3.0.0: {}
 
   environment@1.1.0: {}
 
@@ -4302,8 +4188,6 @@ snapshots:
   fast-json-stable-stringify@2.1.0: {}
 
   fast-levenshtein@2.0.6: {}
-
-  fast-uri@3.0.2: {}
 
   fastq@1.17.1:
     dependencies:
@@ -4624,10 +4508,6 @@ snapshots:
   json-parse-even-better-errors@2.3.1: {}
 
   json-schema-traverse@0.4.1: {}
-
-  json-schema-traverse@1.0.0: {}
-
-  json-schema-typed@8.0.1: {}
 
   json-stable-stringify-without-jsonify@1.0.1: {}
 
@@ -5101,8 +4981,6 @@ snapshots:
 
   require-directory@2.1.1: {}
 
-  require-from-string@2.0.2: {}
-
   resolve-cwd@3.0.0:
     dependencies:
       resolve-from: 5.0.0
@@ -5340,8 +5218,6 @@ snapshots:
       - supports-color
 
   typescript@5.6.2: {}
-
-  uint8array-extras@1.4.0: {}
 
   undici-types@5.26.5: {}
 
