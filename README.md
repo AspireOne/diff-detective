@@ -33,6 +33,12 @@ Diff Detective integrates into your git workflow as follows:
 
 ## Usage
 
+To install:
+
+```bash
+pnpm install -g diff-detective
+```
+
 To use Diff Detective, simply run:
 
 ```bash
