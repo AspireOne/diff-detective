@@ -38,7 +38,13 @@ To install:
 pnpm install -g diff-detective
 ```
 
-The default model is Sonnet 3.5 from Anthropic. For each provider you use, you need an API key. You can set either as an environment variable in the system (OPENAI_API_KEY, ANTHROPIC_API_KEY etc.), always pass it as a CLI argument (detective review --api-key <your-api-key>), or save it (detective -set-api-key <your-api-key)
+The default model is Sonnet 3.5 from Anthropic. 
+
+For each provider you use, you need an API key. You can set it
+
+- as an environment variable in the system (OPENAI_API_KEY, ANTHROPIC_API_KEY etc.),
+- always pass it as a CLI argument (detective review --api-key `your-api-key`)
+- save it to the config file (detective -set-api-key `your-api-key`)
 
 To use Diff Detective, simply run:
 
