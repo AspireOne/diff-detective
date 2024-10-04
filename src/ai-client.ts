@@ -1,7 +1,6 @@
 import OpenAI from "openai";
 import { configDefaults, type Provider } from "./config.js";
 import Anthropic, { Anthropic as AnthropicClient } from "@anthropic-ai/sdk";
-import { logger } from "./logger.js";
 
 type OpenAiMessages = OpenAI.Chat.Completions.ChatCompletionMessageParam[];
 type AnthropicMessages = { role: "user" | "assistant"; content: string }[];
@@ -16,7 +15,8 @@ type CompletionProps = {
 export class AiClient {
   private readonly defaults = {
     temperature: 0.7,
-    maxTokens: configDefaults.max_tokens,
+    // anthropic seems to demand max tokens to be set.
+    maxTokens: 8000,
   };
   private readonly openai: OpenAI | null = null;
   private readonly anthropic: AnthropicClient | null = null;
@@ -41,7 +41,7 @@ export class AiClient {
       const response = await this.openai.chat.completions.create({
         model: props.model,
         messages: props.messages,
-        max_completion_tokens: props.maxTokens ?? this.defaults.maxTokens,
+        max_completion_tokens: props.maxTokens,
         temperature: props.temperature ?? this.defaults.temperature,
       });
 
