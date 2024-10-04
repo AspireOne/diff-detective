@@ -2,7 +2,7 @@ import { Command, Option } from "commander";
 import { review } from "./review.js";
 import { config } from "./config.js";
 import type { Provider } from "./config.js";
-import { packageJson } from "./package-json.js";
+import { constants } from "./constants.js";
 import { logger } from "./logger.js";
 import { ProvidersEnum } from "./config.js";
 import * as fs from "node:fs";
@@ -42,9 +42,9 @@ export function cli() {
   const program = new Command();
 
   program
-    .name(packageJson.name)
-    .description(packageJson.description)
-    .version(packageJson.version)
+    .name(constants.name)
+    .description(constants.description)
+    // .version(constants.version)
     .description("Review staged changes")
     .option(
       `-m, --model <model>`,

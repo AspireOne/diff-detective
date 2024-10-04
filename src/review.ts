@@ -41,10 +41,8 @@ export async function review(cliOptions: ReviewCliOptions) {
   const model = cliOptions.model ?? config.getModel();
   let provider = cliOptions.provider ?? config.getActiveProvider();
   const maxContextLength = cliOptions.maxContextLength ?? config.getMaxContextLength();
-  let customPrompt: string | null = null;
-
-  // Combine ignored files from CLI and config
   const ignoredFiles = [...(cliOptions.ignore || []), ...config.getIgnoredFiles()];
+  let customPrompt: string | null = null;
 
   if (cliOptions.prompt) {
     customPrompt = cliOptions.prompt.substring(0, 500_000);
@@ -62,14 +60,15 @@ export async function review(cliOptions: ReviewCliOptions) {
     }
   }
 
-  const correctProvider = checkModelProviderMismatch(model, provider);
-  if (correctProvider) provider = correctProvider;
+  const correctedProvider = checkModelProviderMismatch(model, provider);
+  if (correctedProvider) provider = correctedProvider;
 
   const apiKey = cliOptions.apiKey ?? (await config.getApiKeyOrAsk(provider));
 
   logger.info(`• Using provider: ${provider}`);
   logger.info(`• Using model: ${model}`);
   logger.info(`• Max context length: ${maxContextLength}`);
+  logger.info(`• Ignoring ${ignoredFiles.length} file(s): ${ignoredFiles.join(", ")}`);
   if (customPrompt) {
     logger.info(`• Using a custom prompt: ${customPrompt.substring(0, 30)}...`);
   }
@@ -110,6 +109,7 @@ async function execute(props: {
   let changes = await git.getStagedChangesWithFullContent(
     stagedFiles.map((f) => f.filename),
   );
+
   changes = changes.trim().substring(0, props.maxContextLength);
 
   let prompt;
@@ -123,6 +123,10 @@ async function execute(props: {
   } else {
     prompt = reviewUserPrompt(changes);
   }
+
+  console.log("aaa");
+  console.log("aaa");
+  console.log("aaa");
 
   const lineCount = changes.split("\n").length;
   const fileList = stagedFiles.map((f) => f.filename).join(", ");

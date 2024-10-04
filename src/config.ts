@@ -1,6 +1,6 @@
 import inquirer from "inquirer";
 import { TypedConfigStore } from "./config-store.js";
-import { packageJson } from "./package-json.js";
+import { constants } from "./constants.js";
 import { logger } from "./logger.js";
 
 export type Config = {
@@ -31,7 +31,7 @@ export const configDefaults = {
   max_context_length: 150_000,
 };
 
-const configStore = new TypedConfigStore(packageJson.name, configDefaults);
+const configStore = new TypedConfigStore(constants.name, configDefaults);
 
 const getUppercaseApiKey = (provider: Provider): API_KEY_KEY =>
   `${provider.toUpperCase()}_API_KEY` as API_KEY_KEY;

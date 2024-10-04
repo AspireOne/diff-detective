@@ -10,13 +10,33 @@ interface StagedFile {
 const sGit = simpleGit();
 
 async function getStagedChangesWithFullContent(files: string[]): Promise<string> {
-  const result = await sGit.raw([
-    "--no-pager",
-    "diff",
-    "--cached",
-    "--unified=3",
-    ...files,
-  ]);
+  const existingFiles = files.filter((file) => fs.existsSync(file));
+  const deletedFiles = files.filter((file) => !fs.existsSync(file));
+
+  let result = "";
+
+  if (existingFiles.length > 0) {
+    result = await sGit.raw([
+      "--no-pager",
+      "diff",
+      "--cached",
+      "--unified=3",
+      ...existingFiles,
+    ]);
+  }
+
+  if (deletedFiles.length > 0) {
+    const deletedChanges = await sGit.raw([
+      "--no-pager",
+      "diff",
+      "--cached",
+      "--unified=3",
+      "--",
+      ...deletedFiles,
+    ]);
+    result += (result ? "\n" : "") + deletedChanges;
+  }
+
   return result;
 }
 
