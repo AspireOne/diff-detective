@@ -46,15 +46,17 @@ export async function review(cliOptions: ReviewCliOptions) {
   let customPrompt: string | null = null;
 
   if (cliOptions.prompt) {
-    if (!fs.existsSync(cliOptions.prompt)) {
-      logger.error(`Custom prompt file ${cliOptions.prompt} does not exist.`);
+    customPrompt = cliOptions.prompt;
+  } else if (cliOptions.promptPath) {
+    if (!fs.existsSync(cliOptions.promptPath)) {
+      logger.error(`Custom prompt file ${cliOptions.promptPath} does not exist.`);
       return;
     }
 
-    customPrompt = fs.readFileSync(cliOptions.prompt, "utf8");
+    customPrompt = fs.readFileSync(cliOptions.promptPath, "utf8");
     customPrompt = customPrompt.trim().substring(0, 250_000);
     if (!customPrompt || customPrompt.length === 0) {
-      logger.error(`Custom prompt file ${cliOptions.prompt} is empty.`);
+      logger.error(`Custom prompt file ${cliOptions.promptPath} is empty.`);
     }
   }
 
@@ -67,12 +69,11 @@ export async function review(cliOptions: ReviewCliOptions) {
   logger.info(`• Using model: ${model}`);
   logger.info(`• Max tokens: ${maxTokens}`);
   logger.info(`• Max context length: ${maxContextLength}`);
-  if (customPrompt)
+  if (customPrompt) {
     logger.info(`• Using a custom prompt: ${customPrompt.substring(0, 30)}...`);
+  }
 
-  const spinner = ora({
-    text: baseSpinnerText,
-  }).start();
+  const spinner = ora({ text: baseSpinnerText }).start();
 
   try {
     const client = new AiClient(provider, apiKey);
@@ -98,14 +99,22 @@ async function execute(props: {
   maxContextLength: number;
   customPrompt?: string | null;
 }) {
-  let content = await git.getStagedChangesWithFullContent();
-  content = content.trim().substring(0, props.maxContextLength);
+  let changes = await git.getStagedChangesWithFullContent();
+  changes = changes.trim().substring(0, props.maxContextLength);
 
-  const prompt = props.customPrompt
-    ? props.customPrompt.replace("{{CONTEXT}}", content)
-    : reviewUserPrompt(content);
+  let prompt;
 
-  const lineCount = content.split("\n").length;
+  if (props.customPrompt) {
+    if (props.customPrompt.includes("{{CONTEXT}}")) {
+      prompt = props.customPrompt.replace("{{CONTEXT}}", changes);
+    } else {
+      prompt = `${props.customPrompt}\n\n<code>${changes}</code>`;
+    }
+  } else {
+    prompt = reviewUserPrompt(changes);
+  }
+
+  const lineCount = changes.split("\n").length;
   const stagedFiles = await git.getStagedFiles();
 
   const fileList = stagedFiles.map((f) => f.filename).join(", ");

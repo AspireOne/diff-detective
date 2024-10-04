@@ -13,17 +13,27 @@ const reviewCliOptions = {
   maxTokens: 1 as number,
   maxContextLength: 1 as number,
   apiKey: "",
+  promptPath: "",
   prompt: "",
 };
 
 export type ReviewCliOptions = Partial<typeof reviewCliOptions>;
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 function ensureReviewParamsValidity(options: any) {
   // If options contains any key that is not in ReviewCliOptions, throw an error
   for (const key in options) {
     if (!(key in reviewCliOptions)) {
-      throw new Error(`Option name mismatch: ${key}`);
+      throw new Error(`Option name mismatch: ${key} - this is a bug`);
     }
+  }
+
+  const typedOptions = options as ReviewCliOptions;
+  if (typedOptions.promptPath && typedOptions.prompt) {
+    logger.error(
+      "You cannot specify both --prompt and --prompt-path. Please choose one.",
+    );
+    process.exit(1);
   }
 }
 
@@ -33,10 +43,7 @@ export function cli() {
   program
     .name(packageJson.name)
     .description(packageJson.description)
-    .version(packageJson.version);
-
-  program
-    .command("review")
+    .version(packageJson.version)
     .description("Review staged changes")
     .option(
       `-m, --model <model>`,
@@ -44,25 +51,26 @@ export function cli() {
     )
     .addOption(
       new Option(
-        `-p, --provider <provider>`,
-        `Specify the provider to use for this review (using: ${config.getActiveProvider()})`,
+        `-pr, --provider <provider>`,
+        `Specify the provider to use for this review (using: ${config.getActiveProvider()}, unless a known model of different provider is selected)`,
       ).choices(Object.values(ProvidersEnum)),
     )
     .option(
       `-mt, --max-tokens <maxTokens>`,
-      `Specify the max tokens to use for this review (using: ${String(config.getMaxTokens())})`,
+      `Specify the max output tokens to use for this review (using: ${String(config.getMaxTokens())})`,
     )
+    .option(`-a, --api-key <apiKey>`, `Specify the API key to use for this review`)
     .option(
-      `-a, --api-key <apiKey>`,
-      `Specify the API key to use for this review (using: ${config.getApiKey(config.getActiveProvider())?.substring(0, 10) ?? "none"})`,
-    )
-    .option(
-      `-pt, --prompt <customPromptPath>`,
+      `-pp, --prompt-path <customPromptPath>`,
       `Specify your prompt in a file and put {{CONTEXT}} where you want the context to be inserted. Then pass the path to the file`,
     )
     .option(
+      `-p, --prompt <customPromptPath>`,
+      `Specify your prompt directly. The context will be injected into the end of your prompt.`,
+    )
+    .option(
       `-mcl, --max-context-length <maxContextLength>`,
-      `Specify the max context length to use for this review (using: ${String(config.getMaxContextLength())})`,
+      `Specify the max context length to leverage for this review (in characters/letters! 200k chars ~= 40k tokens) (using: ${String(config.getMaxContextLength())})`,
     )
     .action(async (options) => {
       ensureReviewParamsValidity(options);

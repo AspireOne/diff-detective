@@ -12,6 +12,7 @@
   },
   "scripts": {
     "start": "npx tsx src/index.ts --",
+    "start:bun": "bun src/index.ts --",
     "build": "tsc",
     "prepublishOnly": "pnpm run build",
     "release": "npx np",
