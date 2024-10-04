@@ -46,7 +46,7 @@ detective --model gpt-4o --prompt-path "./my-custom-review-prompt.txt"
 ```
 
 ```bash
-dd --prompt "See any issues in the database refactor?" -m "o1-mini"
+dd --prompt "See any issues in the database refactor?" -m "o1-mini" --ignore pnpm-lock.yaml dist/
 ```
 
 Example of setting defaults:
@@ -55,6 +55,9 @@ Example of setting defaults:
 detective set-provider anthropic
 detective set-model claude-3-5-sonnet-20240620
 detective set-api-key "your-api-key"
+detective set-ignored-files dist/ pnpm-lock.yaml android/ ios/
+detective get-config
+detective clear-config
 ```
 
 To see all available options, run

@@ -71,7 +71,7 @@ export function cli() {
     )
     .option(
       `-i, --ignore <items...>`,
-      `Specify files or directories to be ignored by the tool`,
+      `Specify files or directories to be ignored by the tool (end directories with a slash, e.g. dist/)`,
     )
     .action(async (options) => {
       ensureReviewParamsValidity(options);
