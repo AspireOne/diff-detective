@@ -124,10 +124,6 @@ async function execute(props: {
     prompt = reviewUserPrompt(changes);
   }
 
-  console.log("aaa");
-  console.log("aaa");
-  console.log("aaa");
-
   const lineCount = changes.split("\n").length;
   const fileList = stagedFiles.map((f) => f.filename).join(", ");
   props.spinner.text = `Analyzing ${lineCount} lines of code ${chalk.italic.gray(fileList)}`;
