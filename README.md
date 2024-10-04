@@ -82,9 +82,9 @@ Diff Detective integrates into your git workflow as follows:
 
 ## To-Do
 
-- [ ] Custom prompt configurable via config, not only using CLI arguments
+- [x] Custom prompt configurable via config, not only using CLI arguments
 - [ ] ? Smarter algorithm for extracting code change context. Currently, the AI only sees the changed files. It might be beneficial to include additional context like repo map, related files, or just general info about the project.
-- [ ] Configurable array of ignored files (pnpm-lock.yaml, dist...) - both global and repo-specific
+- [x] Configurable array of ignored files (pnpm-lock.yaml, dist...) - both global and repo-specific
 - [ ] Streaming support
 - [ ] manual inclusion of additional files using CLI params
 - [ ] More providers (Google, Mistral, Deepseek, Groq)
