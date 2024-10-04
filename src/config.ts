@@ -11,6 +11,7 @@ export type Config = {
   model: string;
   max_context_length: string;
   custom_prompt_path: string;
+  ignored_files: string[];
 };
 
 export enum ProvidersEnum {
@@ -131,6 +132,14 @@ export const config = {
 
   setCustomPromptPath(customPromptPath: string): void {
     configStore.set(key("custom_prompt_path"), customPromptPath);
+  },
+
+  getIgnoredFiles(): string[] {
+    return configStore.get(key("ignored_files")) || [];
+  },
+
+  setIgnoredFiles(ignoredFiles: string[]): void {
+    configStore.set(key("ignored_files"), ignoredFiles);
   },
 
   clearConfig(): void {

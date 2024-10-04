@@ -3,6 +3,7 @@ import ora, { type Ora } from "ora";
 import { logger } from "./logger.js";
 import { AiClient } from "./ai-client.js";
 import { git } from "./git.js";
+import * as path from "node:path";
 import { reviewUserPrompt } from "./prompts/review.user.js";
 import { reviewSystemPrompt } from "./prompts/review.system.js";
 import type { ReviewCliOptions } from "./cli.js";
@@ -42,6 +43,9 @@ export async function review(cliOptions: ReviewCliOptions) {
   const maxContextLength = cliOptions.maxContextLength ?? config.getMaxContextLength();
   let customPrompt: string | null = null;
 
+  // Combine ignored files from CLI and config
+  const ignoredFiles = [...(cliOptions.ignore || []), ...config.getIgnoredFiles()];
+
   if (cliOptions.prompt) {
     customPrompt = cliOptions.prompt.substring(0, 500_000);
   } else if (cliOptions.promptPath || config.getCustomPromptPath()) {
@@ -80,6 +84,7 @@ export async function review(cliOptions: ReviewCliOptions) {
       spinner,
       maxContextLength,
       customPrompt,
+      ignoredFiles,
     });
   } catch (error) {
     spinner.fail(" Review failed: " + error);
@@ -93,8 +98,18 @@ async function execute(props: {
   spinner: Ora;
   maxContextLength: number;
   customPrompt?: string | null;
+  ignoredFiles: string[];
 }) {
-  let changes = await git.getStagedChangesWithFullContent();
+  const stagedFiles = await git.getStagedFiles(props.ignoredFiles);
+
+  if (stagedFiles.length === 0) {
+    logger.warn("After filtering ignored files, there are no staged files left.");
+    process.exit(0);
+  }
+
+  let changes = await git.getStagedChangesWithFullContent(
+    stagedFiles.map((f) => f.filename),
+  );
   changes = changes.trim().substring(0, props.maxContextLength);
 
   let prompt;
@@ -103,15 +118,13 @@ async function execute(props: {
     if (props.customPrompt.includes("{{CONTEXT}}")) {
       prompt = props.customPrompt.replace("{{CONTEXT}}", changes);
     } else {
-      prompt = `${props.customPrompt}\n\n<code>${changes}</code>`;
+      prompt = props.customPrompt + "\n\n" + `<code>${changes}</code>`;
     }
   } else {
     prompt = reviewUserPrompt(changes);
   }
 
   const lineCount = changes.split("\n").length;
-  const stagedFiles = await git.getStagedFiles();
-
   const fileList = stagedFiles.map((f) => f.filename).join(", ");
   props.spinner.text = `Analyzing ${lineCount} lines of code ${chalk.italic.gray(fileList)}`;
 
@@ -126,7 +139,7 @@ async function execute(props: {
 
   props.spinner.stop();
 
-  // @ts-expect-error - marked shourts that they're not compatible, but they are, and it is written in official docs.
+  // @ts-expect-error - marked shouts that they're not compatible, but they are, and it is written in official docs.
   marked.use(markedTerminalInstance);
   console.log(marked.parse(aiResult));
 }

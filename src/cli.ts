@@ -15,6 +15,7 @@ const reviewCliOptions = {
   apiKey: "",
   promptPath: "",
   prompt: "",
+  ignore: [] as string[],
 };
 
 export type ReviewCliOptions = Partial<typeof reviewCliOptions>;
@@ -67,6 +68,10 @@ export function cli() {
     .option(
       `-mcl, --max-context-length <maxContextLength>`,
       `Specify the max context length to leverage for this review (in characters/letters! 200k chars ~= 40k tokens) (using: ${String(config.getMaxContextLength())})`,
+    )
+    .option(
+      `-i, --ignore <items...>`,
+      `Specify files or directories to be ignored by the tool`,
     )
     .action(async (options) => {
       ensureReviewParamsValidity(options);
@@ -151,6 +156,14 @@ export function cli() {
     .action(() => {
       config.clearConfig();
       logger.success("Configuration cleared.");
+    });
+
+  program
+    .command("set-ignored-files <files...>")
+    .description("Set the files or directories to be ignored")
+    .action((files: string[]) => {
+      config.setIgnoredFiles(files);
+      logger.success(`Ignored files/directories set: ${files.join(", ")}`);
     });
 
   program.parse(process.argv);
