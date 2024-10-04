@@ -5,12 +5,12 @@ import type { Provider } from "./config.js";
 import { packageJson } from "./package-json.js";
 import { logger } from "./logger.js";
 import { ProvidersEnum } from "./config.js";
+import * as fs from "node:fs";
 
 // Define it like this so that we can check it during runtime.
 const reviewCliOptions = {
   model: "",
   provider: "" as Provider,
-  maxTokens: 1 as number,
   maxContextLength: 1 as number,
   apiKey: "",
   promptPath: "",
@@ -54,10 +54,6 @@ export function cli() {
         `-pr, --provider <provider>`,
         `Specify the provider to use for this review (using: ${config.getActiveProvider()}, unless a known model of different provider is selected)`,
       ).choices(Object.values(ProvidersEnum)),
-    )
-    .option(
-      `-mt, --max-tokens <maxTokens>`,
-      `Specify the max output tokens to use for this review (using: ${String(config.getMaxTokens())})`,
     )
     .option(`-a, --api-key <apiKey>`, `Specify the API key to use for this review`)
     .option(
@@ -110,18 +106,17 @@ export function cli() {
     });
 
   program
-    .command("set-max-tokens <value>")
+    .command("set-custom-prompt-path <model>")
     .description(
-      "Set the max tokens the AI can use. Any remaining changes will be cut off smartly.",
+      "Set the default prompt to use (include {{CONTEXT}} where you want the context to be inserted)",
     )
-    .action((value: string) => {
-      const maxTokens = parseInt(value, 10);
-      if (isNaN(maxTokens) || maxTokens <= 0) {
-        logger.error("Invalid max tokens value. Please provide a positive integer.");
-      } else {
-        config.setMaxTokens(maxTokens);
-        logger.success(`Max tokens set to ${maxTokens}.`);
+    .action((path: string) => {
+      if (!fs.existsSync(path)) {
+        logger.error(`Custom prompt file ${path} does not exist.`);
+        return;
       }
+      config.setCustomPromptPath(path);
+      logger.success(`Default prompt set to ${path}.`);
     });
 
   program

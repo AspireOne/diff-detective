@@ -12,8 +12,6 @@ import chalk from "chalk";
 import { models } from "./models.js";
 import * as fs from "node:fs";
 
-const baseSpinnerText = "Reviewing changes...\n";
-
 function checkModelProviderMismatch(model: string, provider: Provider): Provider | null {
   for (const [providerName, providerModels] of Object.entries(models) as [
     Provider,
@@ -41,22 +39,22 @@ export async function review(cliOptions: ReviewCliOptions) {
 
   const model = cliOptions.model ?? config.getModel();
   let provider = cliOptions.provider ?? config.getActiveProvider();
-  const maxTokens = cliOptions.maxTokens ?? config.getMaxTokens();
   const maxContextLength = cliOptions.maxContextLength ?? config.getMaxContextLength();
   let customPrompt: string | null = null;
 
   if (cliOptions.prompt) {
-    customPrompt = cliOptions.prompt;
-  } else if (cliOptions.promptPath) {
-    if (!fs.existsSync(cliOptions.promptPath)) {
-      logger.error(`Custom prompt file ${cliOptions.promptPath} does not exist.`);
+    customPrompt = cliOptions.prompt.substring(0, 500_000);
+  } else if (cliOptions.promptPath || config.getCustomPromptPath()) {
+    const path = (cliOptions.promptPath ?? config.getCustomPromptPath())!;
+    if (!fs.existsSync(path)) {
+      logger.error(`Custom prompt file ${path} does not exist.`);
       return;
     }
 
-    customPrompt = fs.readFileSync(cliOptions.promptPath, "utf8");
-    customPrompt = customPrompt.trim().substring(0, 250_000);
+    customPrompt = fs.readFileSync(path, "utf8");
+    customPrompt = customPrompt.trim().substring(0, 500_000);
     if (!customPrompt || customPrompt.length === 0) {
-      logger.error(`Custom prompt file ${cliOptions.promptPath} is empty.`);
+      logger.error(`Custom prompt file ${path} is empty.`);
     }
   }
 
@@ -67,13 +65,12 @@ export async function review(cliOptions: ReviewCliOptions) {
 
   logger.info(`• Using provider: ${provider}`);
   logger.info(`• Using model: ${model}`);
-  logger.info(`• Max tokens: ${maxTokens}`);
   logger.info(`• Max context length: ${maxContextLength}`);
   if (customPrompt) {
     logger.info(`• Using a custom prompt: ${customPrompt.substring(0, 30)}...`);
   }
 
-  const spinner = ora({ text: baseSpinnerText }).start();
+  const spinner = ora({ text: "Reviewing changes...\n" }).start();
 
   try {
     const client = new AiClient(provider, apiKey);
@@ -81,7 +78,6 @@ export async function review(cliOptions: ReviewCliOptions) {
       client,
       model,
       spinner,
-      maxTokens,
       maxContextLength,
       customPrompt,
     });
@@ -95,7 +91,6 @@ async function execute(props: {
   client: AiClient;
   model: string;
   spinner: Ora;
-  maxTokens: number;
   maxContextLength: number;
   customPrompt?: string | null;
 }) {
@@ -122,7 +117,6 @@ async function execute(props: {
 
   const aiResult = await props.client.chatCompletion({
     model: props.model,
-    maxTokens: props.maxTokens,
     temperature: 0.7,
     messages: [
       { role: "system", content: reviewSystemPrompt },

@@ -9,8 +9,8 @@ export type Config = {
   OPENROUTER_API_KEY?: string;
   provider: Provider;
   model: string;
-  max_tokens: string;
   max_context_length: string;
+  custom_prompt_path: string;
 };
 
 export enum ProvidersEnum {
@@ -28,6 +28,8 @@ export const configDefaults = {
   max_tokens: 8000,
   max_context_length: 150_000,
 };
+
+const key = (key: keyof Config) => key;
 
 const configStore = new TypedConfigStore(packageJson.name, configDefaults);
 
@@ -71,12 +73,13 @@ export const config = {
    */
   getActiveProvider(): Provider {
     return (
-      (configStore.get("provider") as Provider) || (configDefaults.provider as Provider)
+      (configStore.get(key("provider")) as Provider) ||
+      (configDefaults.provider as Provider)
     );
   },
 
   setActiveProvider(provider: Provider): void {
-    configStore.set("provider", provider);
+    configStore.set(key("provider"), provider);
   },
 
   /**
@@ -84,7 +87,7 @@ export const config = {
    * this will always return a model, even if none is specified in config.
    */
   getModel(): string {
-    const model = configStore.get("model") as string | undefined;
+    const model = configStore.get(key("model")) as string | undefined;
     if (model) {
       return model;
     }
@@ -103,29 +106,13 @@ export const config = {
   },
 
   setModel(model: string): void {
-    configStore.set("model", model);
-  },
-
-  getMaxTokens(): number {
-    const maxTokens = configStore.get("max_tokens");
-    const asNumber = parseInt(maxTokens);
-    if (isNaN(asNumber) || asNumber < 0) {
-      logger.error(`Invalid max tokens: ${maxTokens}`);
-      this.setMaxTokens(configDefaults.max_tokens);
-      return configDefaults.max_tokens;
-    }
-
-    return asNumber;
-  },
-
-  setMaxTokens(maxTokens: number): void {
-    configStore.set("max_tokens", String(maxTokens));
+    configStore.set(key("model"), model);
   },
 
   getMaxContextLength(): number {
-    const maxContextLength = configStore.get("max_context_length");
-    const asNumber = parseInt(maxContextLength);
-    if (isNaN(asNumber) || asNumber < 0) {
+    const maxContextLength = configStore.get(key("max_context_length"));
+    const asNumber = parseInt(maxContextLength ?? "");
+    if (isNaN(asNumber) || asNumber <= 0) {
       logger.error(`Invalid max context length: ${maxContextLength}`);
       this.setMaxContextLength(configDefaults.max_context_length);
       return configDefaults.max_context_length;
@@ -135,7 +122,15 @@ export const config = {
   },
 
   setMaxContextLength(maxContextLength: number): void {
-    configStore.set("max_context_length", String(maxContextLength));
+    configStore.set(key("max_context_length"), String(maxContextLength));
+  },
+
+  getCustomPromptPath(): string | undefined {
+    return configStore.get(key("custom_prompt_path"));
+  },
+
+  setCustomPromptPath(customPromptPath: string): void {
+    configStore.set(key("custom_prompt_path"), customPromptPath);
   },
 
   clearConfig(): void {
