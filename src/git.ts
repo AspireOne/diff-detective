@@ -20,7 +20,7 @@ async function getStagedChangesWithFullContent(files: string[]): Promise<string>
       "--no-pager",
       "diff",
       "--cached",
-      "--unified=3",
+      "--unified=25",
       ...existingFiles,
     ]);
   }
@@ -30,7 +30,7 @@ async function getStagedChangesWithFullContent(files: string[]): Promise<string>
       "--no-pager",
       "diff",
       "--cached",
-      "--unified=3",
+      "--unified=25",
       "--",
       ...deletedFiles,
     ]);
