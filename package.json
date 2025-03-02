@@ -35,7 +35,6 @@
   "bugs": "https://github.com/AspireOne/diff-detective/issues",
   "repository": "https://github.com/AspireOne/diff-detective",
   "preferGlobal": true,
-  "packageManager": "pnpm@9.1.4",
   "license": "ISC",
   "devDependencies": {
     "@eslint/js": "^9.11.1",
