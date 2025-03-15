@@ -2,7 +2,7 @@ import { config, Provider } from "./config.js";
 import ora, { type Ora } from "ora";
 import { logger } from "./logger.js";
 import { AiClient } from "./ai-client.js";
-import { git, type AnalysisStats } from "./git.js";
+import { git } from "./git.js";
 import * as path from "node:path";
 import { reviewUserPrompt } from "./prompts/review.user.js";
 import { reviewSystemPrompt } from "./prompts/review.system.js";
@@ -12,93 +12,6 @@ import { markedTerminalInstance } from "./marked-terminal.js";
 import chalk from "chalk";
 import { models } from "./models.js";
 import * as fs from "node:fs";
-
-/**
- * Logs detailed statistics about what's being analyzed
- */
-function logAnalysisStats(
-  stats: AnalysisStats,
-  stagedFiles: { filename: string; changes: number }[],
-): void {
-  logger.info(`Analysis Statistics:`);
-  logger.info(`• Total files: ${stagedFiles.length}`);
-  logger.info(`• Total changed lines: ${stats.totalChangedLines}`);
-  logger.info(`• Total context lines: ${stats.totalContextLines}`);
-
-  // Log each file with its stats
-  logger.info(`\nFiles being analyzed:`);
-
-  // Sort files by path for better readability
-  const sortedFiles = [...stagedFiles].sort((a, b) =>
-    a.filename.localeCompare(b.filename),
-  );
-
-  // Create a map for quick lookup of full context files
-  const fullContextMap = new Map<
-    string,
-    {
-      totalLines: number;
-      changedLines: number;
-      changePercentage: number;
-    }
-  >();
-
-  stats.fullFileContexts.forEach((file) => {
-    fullContextMap.set(file.filename, {
-      totalLines: file.totalLines,
-      changedLines: file.changedLines,
-      changePercentage: file.changePercentage,
-    });
-  });
-
-  // Log each file directly from the sorted stagedFiles array
-  sortedFiles.forEach((file) => {
-    const fullContextInfo = fullContextMap.get(file.filename);
-
-    if (fullContextInfo) {
-      logger.success(
-        `${file.filename} - ${fullContextInfo.changedLines} changed lines (${fullContextInfo.changePercentage.toFixed(1)}%) - ` +
-          `Full context included (${fullContextInfo.totalLines} lines)`,
-      );
-    } else {
-      logger.warn(`${file.filename} - ${file.changes} changed lines - Diff only`);
-    }
-  });
-}
-
-/**
- * Smart truncation function that ensures XML tags aren't cut in the middle
- * It will include complete <full-file-context> blocks or exclude them entirely
- */
-function smartTruncate(changes: string, maxLength: number): string {
-  if (changes.length <= maxLength) return changes;
-
-  // Find all full file context blocks
-  const regex = /<full-file-context file="[^"]+">[\s\S]*?<\/full-file-context>/g;
-  const matches = [...changes.matchAll(regex)];
-
-  // If no matches or diff already exceeds max length, just truncate
-  if (matches.length === 0 || matches[0].index! > maxLength) {
-    return changes.substring(0, maxLength);
-  }
-
-  // Keep diff and add as many complete context blocks as will fit
-  const diffPart = changes.substring(0, matches[0].index!);
-  let result = diffPart;
-  let remainingSpace = maxLength - diffPart.length;
-
-  for (const match of matches) {
-    const block = match[0];
-    if (block.length <= remainingSpace) {
-      result += block;
-      remainingSpace -= block.length;
-    } else {
-      break;
-    }
-  }
-
-  return result;
-}
 
 function checkModelProviderMismatch(model: string, provider: Provider): Provider | null {
   for (const [providerName, providerModels] of Object.entries(models) as [
@@ -193,24 +106,11 @@ async function execute(props: {
     process.exit(0);
   }
 
-  const { content: rawChanges, stats } = await git.getStagedChangesWithFullContent(
+  let changes = await git.getStagedChangesWithFullContent(
     stagedFiles.map((f) => f.filename),
   );
 
-  // Trim the changes to fit within the max context length
-  // Use smart truncation to ensure XML tags aren't cut in the middle
-  let changes = rawChanges;
-  if (changes.length > props.maxContextLength) {
-    logger.warn(
-      `Changes exceed max context length (${changes.length} > ${props.maxContextLength}). Some context may be truncated.`,
-    );
-    changes = smartTruncate(changes, props.maxContextLength);
-  }
-
-  changes = changes.trim();
-
-  // Log detailed statistics about what we're analyzing
-  logAnalysisStats(stats, stagedFiles);
+  changes = changes.trim().substring(0, props.maxContextLength);
 
   let prompt;
 
@@ -224,16 +124,9 @@ async function execute(props: {
     prompt = reviewUserPrompt(changes);
   }
 
-  // Create a more detailed spinner text with statistics
-  const fileCount = stagedFiles.length;
-  const fullFileCount = stats.fullFileContexts.length;
-  // unused
-  const fullFileLines = stats.fullFileContexts.reduce((sum, f) => sum + f.totalLines, 0);
-
-  props.spinner.text = `Analyzing ${fileCount} files with ${stats.totalChangedLines} changed lines`;
-  if (fullFileCount > 0) {
-    props.spinner.text += ` (${fullFileCount} files with full context)`;
-  }
+  const lineCount = changes.split("\n").length;
+  const fileList = stagedFiles.map((f) => f.filename).join(", ");
+  props.spinner.text = `Analyzing ${lineCount} lines of code ${chalk.italic.gray(fileList)}`;
 
   const aiResult = await props.client.chatCompletion({
     model: props.model,

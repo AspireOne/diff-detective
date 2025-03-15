@@ -1,16 +1,9 @@
 export const reviewUserPrompt = (context: string) => `
 Analyze the git changes inside <code></code> tags and provide a report in the format delimited by <format></format> tags.
 
-The context includes:
-1. Git diff output showing changes with surrounding context (25 lines before and after)
-2. Full file content for some files with small changes (enclosed in XML tags like <full-file-context file="filename">...</full-file-context>)
-
-Use the full file context when available to better understand the overall structure and purpose of the files being modified.
-
 Additional instructions:
 - Be concise.
 - Speculative low-priority issues like formatting, @ts-ignore, variable names, non-null assertions etc. should not be included at all, because they are usually intended. If you do find it severe in the given context, include it only in notes.
-- When full file context is available, use it to provide more accurate analysis of how the changes fit into the overall code structure.
 
 Additional info about formatting:
 - The <format></format> section uses {} (curly braces) to indicate where content should be inserted and to include description, and [] (square brackets) to describe each category. It should not be in the final output.
